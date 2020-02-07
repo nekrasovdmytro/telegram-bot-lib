@@ -50,10 +50,15 @@ type BasicBot struct {
     UfManager       *UserFlowManager
     abilities       AbilityMap
     specialCommands map[string]struct{}
+    initCallback func(*tb.Message)
 }
 
 func (d *BasicBot) SetAbilities(a AbilityMap) {
     d.abilities = a
+}
+
+func (d *BasicBot) SetInitFn(fn func(*tb.Message)) {
+    d.initCallback = fn
 }
 
 func (d *BasicBot) init() {
@@ -112,10 +117,6 @@ func (d *BasicBot) SendMessage(r Recipient, what interface{}) {
 }
 
 func (d *BasicBot) RenderStartFrame(m *tb.Message) {
-    for key, a := range d.abilities  {
-        d.SendMessage(m.Sender, key + " " + a.Name + "\n" + a.Description)
-    }
-
     var inlineKeys [][]tb.ReplyButton
     for k := range d.abilities {
         inlineBtn := tb.ReplyButton{
@@ -140,5 +141,13 @@ func (d *BasicBot) RenderStartFrame(m *tb.Message) {
 
     if _, err := d.TelegramBot.Send(m.Sender,text , &tb.ReplyMarkup{ReplyKeyboard: inlineKeys, ReplyKeyboardRemove: true, ResizeReplyKeyboard: true}); err != nil {
         log.Print(err)
+    }
+
+    for key, a := range d.abilities  {
+        d.SendMessage(m.Sender, key + " " + a.Name + "\n" + a.Description)
+    }
+
+    if d.initCallback != nil {
+        d.initCallback(m)
     }
 }
