@@ -1,0 +1,70 @@
+package telegrabotlib
+
+import (
+    "github.com/go-redis/redis/v7"
+    "github.com/pkg/errors"
+    "os"
+    "time"
+)
+
+type Session interface {
+    Set(user, key string, value string) error
+    Get(user,key string) (string, error)
+    Delete(user string, key string) error
+    DeleteAll(user string) error
+}
+
+var (
+    ErrKeyNotFound = errors.New("Not found key")
+)
+
+type defaultRedisSession struct {
+    client *redis.Client
+}
+
+func NewRedisSession() *defaultRedisSession {
+    options, _ := redis.ParseURL(os.Getenv("REDIS_URL"))
+    return &defaultRedisSession{
+        client: redis.NewClient(options),
+    }
+}
+
+func (d *defaultRedisSession) Set(user, key string, value string) error {
+    d.client.Set(user+key, value, time.Hour * 100)
+    return nil
+}
+
+func (d *defaultRedisSession) Get(user, key string) (string, error) {
+    r := d.client.Get(user+key)
+    return r.Result()
+}
+
+func (d *defaultRedisSession) DeleteAll(user string) error {
+    iter := d.client.Scan(0, user+"*", 0).Iterator()
+    for iter.Next() {
+        err := d.client.Del(iter.Val()).Err()
+        if err != nil {
+            return err
+        }
+    }
+    if err := iter.Err(); err != nil {
+        return err
+    }
+
+    return nil
+}
+
+func (d *defaultRedisSession) Delete(user, key string) error {
+    err := d.client.Del(user+key).Err()
+    if err != nil {
+        return err
+    }
+
+    return nil
+}
+
+
+
+
+
+
