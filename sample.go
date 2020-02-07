@@ -1,7 +1,7 @@
 package telegrabotlib
 
 type SampleTask struct {
-    do Executable
+    Do Executable
 }
 
 func (d *SampleTask) Execute(input Input) *TaskResult {
@@ -9,7 +9,7 @@ func (d *SampleTask) Execute(input Input) *TaskResult {
         return InvalidTaskResult
     }
 
-    return d.do(input)
+    return d.Do(input)
 }
 
 type TextInput struct {
