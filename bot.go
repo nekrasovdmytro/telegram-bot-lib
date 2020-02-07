@@ -52,11 +52,11 @@ type BasicBot struct {
     specialCommands map[string]struct{}
 }
 
-func (d BasicBot) SetAbilities(a AbilityMap) {
+func (d *BasicBot) SetAbilities(a AbilityMap) {
     d.abilities = a
 }
 
-func (d BasicBot) init() {
+func (d *BasicBot) init() {
     d.TelegramBot.Handle("/start", func(m *tb.Message) {
         d.RenderStartFrame(m)
     })
@@ -76,17 +76,17 @@ func (d BasicBot) init() {
     })
 }
 
-func (d BasicBot) Start() {
+func (d *BasicBot) Start() {
     log.Printf("Authorized on account %s", d.TelegramBot.Me.FirstName)
     d.init()
     d.TelegramBot.Start()
 }
 
-func (d BasicBot) Abilities() AbilityMap {
+func (d *BasicBot) Abilities() AbilityMap {
     return d.abilities
 }
 
-func (d BasicBot) Execute(userID string, r Recipient, executable Executable, input Input) *TaskResult {
+func (d *BasicBot) Execute(userID string, r Recipient, executable Executable, input Input) *TaskResult {
     res := executable(input)
 
     log.Print("Executed data:")
@@ -105,13 +105,13 @@ func (d BasicBot) Execute(userID string, r Recipient, executable Executable, inp
     return res
 }
 
-func (d BasicBot) SendMessage(r Recipient, what interface{}) {
+func (d *BasicBot) SendMessage(r Recipient, what interface{}) {
     if _, err := d.TelegramBot.Send(r, what, tb.ModeHTML); err != nil {
         log.Print(err)
     }
 }
 
-func (d BasicBot) RenderStartFrame(m *tb.Message) {
+func (d *BasicBot) RenderStartFrame(m *tb.Message) {
     for key, a := range d.abilities  {
         d.SendMessage(m.Sender, key + " " + a.Name + "\n" + a.Description)
     }
