@@ -73,6 +73,10 @@ func (d *BasicBot) init() {
     })
 
     d.TelegramBot.Handle(tb.OnText, func(m *tb.Message) {
+        if m.Sender.IsBot {
+            return
+        }
+
         if _, ok := d.specialCommands[m.Text]; ok {
             return
         }
