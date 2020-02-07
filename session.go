@@ -3,7 +3,6 @@ package telegrabotlib
 import (
     "github.com/go-redis/redis/v7"
     "github.com/pkg/errors"
-    "os"
     "time"
 )
 
@@ -22,8 +21,8 @@ type defaultRedisSession struct {
     client *redis.Client
 }
 
-func NewRedisSession() *defaultRedisSession {
-    options, _ := redis.ParseURL(os.Getenv("REDIS_URL"))
+func NewRedisSession(redisURL string) *defaultRedisSession {
+    options, _ := redis.ParseURL(redisURL)
     return &defaultRedisSession{
         client: redis.NewClient(options),
     }

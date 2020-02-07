@@ -22,7 +22,7 @@ type Message interface {
     Send(userId string, what interface{})
 }
 
-func NewBot(token, port, publicURL string) (*BasicBot, error) {
+func NewBot(token, port, publicURL, redisURL string) (*BasicBot, error) {
     webHook := &tb.Webhook{
         Listen:   ":" + port,
         Endpoint: &tb.WebhookEndpoint{PublicURL: publicURL},
@@ -37,7 +37,7 @@ func NewBot(token, port, publicURL string) (*BasicBot, error) {
 
     return &BasicBot{
         TelegramBot:telBot,
-        UfManager: NewUserFlowManager(NewUserFlowSession(NewRedisSession())),
+        UfManager: NewUserFlowManager(NewUserFlowSession(NewRedisSession(redisURL))),
         specialCommands: map[string]struct{}{
             "/start": {},
             "/stop": {},
