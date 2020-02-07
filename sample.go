@@ -1,10 +1,10 @@
 package telegrabotlib
 
-type sampleTask struct {
+type SampleTask struct {
     do Executable
 }
 
-func (d *sampleTask) Execute(input Input) *TaskResult {
+func (d *SampleTask) Execute(input Input) *TaskResult {
     if d == nil {
         return InvalidTaskResult
     }
