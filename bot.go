@@ -72,7 +72,7 @@ func (d *BasicBot) init() {
         d.UfManager.uSession.FinishFlow(strconv.Itoa(m.Sender.ID))
     })
 
-    d.TelegramBot.Handle(tb.OnText, func(m *tb.Message) {
+    executeFlow := func(m *tb.Message) {
         if m.Sender.IsBot {
             return
         }
@@ -82,6 +82,14 @@ func (d *BasicBot) init() {
         }
 
         d.UfManager.ExecuteFlow(d, strconv.Itoa(m.Sender.ID), m.Sender, &TextInput{UserId: m.Sender.ID, Text: m.Text, Location: Location{Lat:m.Location.Lat, Lng:m.Location.Lng}})
+    }
+
+    d.TelegramBot.Handle(tb.OnText, func(m *tb.Message) {
+        executeFlow(m)
+    })
+
+    d.TelegramBot.Handle(tb.OnLocation, func(m *tb.Message) {
+        executeFlow(m)
     })
 }
 
