@@ -13,6 +13,7 @@ func (d *SampleTask) Execute(input Input) *TaskResult {
 }
 
 type TextInput struct {
+    UserId int
     Text string
     Location
 }
@@ -22,6 +23,6 @@ func (d *TextInput) InputData() interface{} {
 }
 
 type Location struct {
-    Lat float64
-    Lng float64
+    Lat float32
+    Lng float32
 }

@@ -81,7 +81,7 @@ func (d *BasicBot) init() {
             return
         }
 
-        d.UfManager.ExecuteFlow(d, strconv.Itoa(m.Sender.ID), m.Sender, &TextInput{Text: m.Text})
+        d.UfManager.ExecuteFlow(d, strconv.Itoa(m.Sender.ID), m.Sender, &TextInput{UserId: m.Sender.ID, Text: m.Text, Location: Location{Lat:m.Location.Lat, Lng:m.Location.Lng}})
     })
 }
 
@@ -129,7 +129,7 @@ func (d *BasicBot) RenderStartFrame(m *tb.Message) {
         inlineKeys = append(inlineKeys, []tb.ReplyButton{inlineBtn})
 
         d.TelegramBot.Handle(&inlineBtn, func(c *tb.Callback) {
-            d.UfManager.ExecuteFlow(d, strconv.Itoa(c.Sender.ID), c.Sender, &TextInput{Text: k})
+            d.UfManager.ExecuteFlow(d, strconv.Itoa(c.Sender.ID), c.Sender, &TextInput{UserId: c.Sender.ID,Text: k, Location: Location{Lat:c.Message.Location.Lat, Lng:c.Message.Location.Lng}})
         })
     }
 
