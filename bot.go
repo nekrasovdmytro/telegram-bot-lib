@@ -81,7 +81,11 @@ func (d *BasicBot) init() {
             return
         }
 
-        d.UfManager.ExecuteFlow(d, strconv.Itoa(m.Sender.ID), m.Sender, &TextInput{UserId: m.Sender.ID, Text: m.Text, Location: Location{Lat:m.Location.Lat, Lng:m.Location.Lng}})
+        input := &TextInput{UserId: m.Sender.ID, Text: m.Text, Location: }
+        if m.Location != nil {
+            input.Location = Location{Lat: m.Location.Lat, Lng: m.Location.Lng}
+        }
+        d.UfManager.ExecuteFlow(d, strconv.Itoa(m.Sender.ID), m.Sender, input)
     }
 
     d.TelegramBot.Handle(tb.OnText, func(m *tb.Message) {
