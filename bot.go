@@ -81,7 +81,7 @@ func (d *BasicBot) init() {
             return
         }
 
-        input := &TextInput{UserId: m.Sender.ID, Text: m.Text, Location: }
+        input := &TextInput{UserId: m.Sender.ID, Text: m.Text}
         if m.Location != nil {
             input.Location = Location{Lat: m.Location.Lat, Lng: m.Location.Lng}
         }
