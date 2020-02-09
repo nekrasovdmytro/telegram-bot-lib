@@ -8,7 +8,9 @@ import (
 
 type Session interface {
     Set(user, key string, value string) error
+    SetForever(user, key string, value string) error
     Get(user,key string) (string, error)
+    GetAllLike(key string) (map[string]string, error)
     Delete(user string, key string) error
     DeleteAll(user string) error
 }
@@ -28,6 +30,11 @@ func NewRedisSession(redisURL string) *defaultRedisSession {
     }
 }
 
+func (d *defaultRedisSession) SetForever(user, key string, value string) error {
+    d.client.Set(user+key, value, 0)
+    return nil
+}
+
 func (d *defaultRedisSession) Set(user, key string, value string) error {
     d.client.Set(user+key, value, time.Hour * 100)
     return nil
@@ -35,6 +42,11 @@ func (d *defaultRedisSession) Set(user, key string, value string) error {
 
 func (d *defaultRedisSession) Get(user, key string) (string, error) {
     r := d.client.Get(user+key)
+    return r.Result()
+}
+
+func (d *defaultRedisSession) GetAllLike(key string) (map[string]string, error) {
+    r := d.client.HGetAll(key)
     return r.Result()
 }
 
