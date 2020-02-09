@@ -14,6 +14,7 @@ func (d *SampleTask) Execute(input Input) *TaskResult {
 
 type TextInput struct {
     UserId int
+    Username string
     Text string
     Location
 }
