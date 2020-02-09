@@ -53,6 +53,10 @@ func (d *defaultRedisSession) GetAllLike(key string) ([]string, error) {
         keys = append(keys, iter.Val())
     }
 
+    if len(keys) == 0 {
+        return nil, ErrKeyNotFound
+    }
+
     r := d.client.MGet(keys...)
 
     vals, err := r.Result()
