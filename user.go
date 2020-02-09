@@ -22,11 +22,12 @@ func (d *UserCache) AddUser(userID, subscribeFor string) error {
     return nil
 }
 
-func (d *UserCache) GetAllUsers() (map[string]string, error) {
+func (d *UserCache) GetAllUsers() ([]string, error) {
     return d.s.GetAllLike("storeAll*")
 }
 
-func (d *UserCache) GetAllSubscribedUsers(subscribeFor string) (map[string]string, error) {
+func (d *UserCache) GetAllSubscribedUsers(subscribeFor string) ([]string, error) {
+
     return d.s.GetAllLike("*" + subscribeFor)
 }
 

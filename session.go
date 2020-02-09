@@ -10,7 +10,7 @@ type Session interface {
     Set(user, key string, value string) error
     SetForever(user, key string, value string) error
     Get(user,key string) (string, error)
-    GetAllLike(key string) (map[string]string, error)
+    GetAllLike(key string) ([]string, error)
     Delete(user string, key string) error
     DeleteAll(user string) error
 }
@@ -45,9 +45,27 @@ func (d *defaultRedisSession) Get(user, key string) (string, error) {
     return r.Result()
 }
 
-func (d *defaultRedisSession) GetAllLike(key string) (map[string]string, error) {
-    r := d.client.HGetAll(key)
-    return r.Result()
+func (d *defaultRedisSession) GetAllLike(key string) ([]string, error) {
+    iter := d.client.Scan(0, key, 0).Iterator()
+
+    keys := make([]string, 0)
+    for iter.Next() {
+        keys = append(keys, iter.Val())
+    }
+
+    r := d.client.MGet(keys...)
+
+    vals, err := r.Result()
+    if err != nil {
+        return nil, err
+    }
+
+    res := make([]string, len(vals))
+    for _, v := range vals {
+        res = append(res, v.(string))
+    }
+
+    return res, nil
 }
 
 func (d *defaultRedisSession) DeleteAll(user string) error {
