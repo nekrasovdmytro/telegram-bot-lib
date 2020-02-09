@@ -28,7 +28,7 @@ func (d *UserCache) GetAllUsers() ([]string, error) {
 
 func (d *UserCache) GetAllSubscribedUsers(subscribeFor string) ([]string, error) {
 
-    return d.s.GetAllLike("*" + subscribeFor)
+    return d.s.GetAllLike(subscribeFor+"*")
 }
 
 func (d *UserCache) DeleteSubscription(subscribeFor string) error {
