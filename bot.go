@@ -83,7 +83,7 @@ func (d *BasicBot) init() {
 			return
 		}
 
-		input := &TextInput{UserId: m.Sender.ID, Text: m.Text}
+		input := &TextInput{UserId: m.Sender.ID, Username:m.Sender.Recipient(), Text: m.Text}
 		if m.Location != nil {
 			input.Location = Location{Lat: m.Location.Lat, Lng: m.Location.Lng}
 		}
@@ -144,7 +144,7 @@ func (d *BasicBot) RenderStartFrame(m *tb.Message) {
 		inlineKeys = append(inlineKeys, []tb.ReplyButton{inlineBtn})
 
 		d.TelegramBot.Handle(&inlineBtn, func(c *tb.Callback) {
-			d.UfManager.ExecuteFlow(d, strconv.Itoa(c.Sender.ID), c.Sender, &TextInput{UserId: c.Sender.ID, Text: k, Location: Location{Lat: c.Message.Location.Lat, Lng: c.Message.Location.Lng}})
+			d.UfManager.ExecuteFlow(d, strconv.Itoa(c.Sender.ID), c.Sender, &TextInput{UserId: c.Sender.ID, Username:c.Sender.Recipient(), Text: k, Location: Location{Lat: c.Message.Location.Lat, Lng: c.Message.Location.Lng}})
 		})
 	}
 
