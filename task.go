@@ -36,6 +36,7 @@ const (
 	INVALID TaskResultType = iota
 	TEXT
 	LOCATION
+	PHOTO
 )
 
 type TaskResult struct {

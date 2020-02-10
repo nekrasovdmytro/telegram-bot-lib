@@ -120,10 +120,11 @@ func (d *BasicBot) Execute(userID string, r Recipient, executable Executable, in
 		switch sr.Type {
 		case LOCATION:
 			d.SendMessage(r, sr.Result().(*tb.Location))
+		case PHOTO:
+			d.SendMessage(r, sr.Result().(*tb.Photo))
 		default:
 			d.SendMessage(r, sr.Result())
 		}
-
 	}
 
 	return res
